@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Snake Game</title>
+  <style>
+    canvas {
+      border: 1px solid black;
+      background-color: #000;
+      display: block;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas" width="800" height="600"></canvas>
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const context = canvas.getContext("2d");
+
+    const gridSize = 20;
+    const tileCountX = canvas.width / gridSize;
+    const tileCountY = canvas.height / gridSize;
+
+    let snake = [];
+    snake[0] = { x: 10, y: 10 };
+
+    let food = { x: Math.floor(Math.random() * tileCountX), y: Math.floor(Math.random() * tileCountY) };
+
+    let dx = 0;
+    let dy = 0;
+
+    let gameLoop;
+
+    function drawSnake() {
+      context.fillStyle = "green";
+      for (let i = 0; i < snake.length; i++) {
+        context.fillRect(snake[i].x * gridSize, snake[i].y * gridSize, gridSize, gridSize);
+      }
+    }
+
+    function drawFood() {
+      context.fillStyle = "red";
+      context.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
+    }
+
+    function moveSnake() {
+      const head = { x: snake[0].x + dx, y: snake[0].y + dy };
+      snake.unshift(head);
+
+      if (snake[0].x === food.x && snake[0].y === food.y) {
+        food = { x: Math.floor(Math.random() * tileCountX), y: Math.floor(Math.random() * tileCountY) };
+      } else {
+        snake.pop();
+      }
+    }
+
+    function changeDirection(event) {
+      const LEFT_KEY = 37;
+      const UP_KEY = 38;
+      const RIGHT_KEY = 39;
+      const DOWN_KEY = 40;
+
+      const keyPressed = event.keyCode;
+
+      const goingUp = dy === -1;
+      const goingDown = dy === 1;
+      const goingLeft = dx === -1;
+      const goingRight = dx === 1;
+
+      if (keyPressed === LEFT_KEY && !goingRight) {
+        dx = -1;
+        dy = 0;
+      }
+
+      if (keyPressed === UP_KEY && !goingDown) {
+        dx = 0;
+        dy = -1;
+      }
+
+      if (keyPressed === RIGHT_KEY && !goingLeft) {
+        dx = 1;
+        dy = 0;
+      }
+
+      if (keyPressed === DOWN_KEY && !goingUp) {
+        dx = 0;
+        dy = 1;
+      }
+    }
+
+    function checkCollision() {
+      for (let i = 1; i < snake.length; i++) {
+        if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) {
+          return true;
+        }
+      }
+
+      const hitLeftWall = snake[0].x < 0;
+      const hitRightWall = snake[0].x >= tileCountX;
+      const hitTopWall = snake[0].y < 0;
+      const hitBottomWall = snake[0].y >= tileCountY;
+
+      return hitLeftWall || hitRightWall || hitTopWall || hitBottomWall;
+    }
+
+    function draw() {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+
+      if (checkCollision()) {
+        clearInterval(gameLoop);
+        alert("Game Over");
+        resetGame();
+        return;
+      }
+
+      drawSnake();
+      drawFood();
+      moveSnake();
+    }
+
+    function resetGame() {
+      snake = [];
+      snake[0] = { x: 10, y: 10 };
+      dx = 0;
+      dy = 0;
+      food = { x: Math.floor(Math.random() * tileCountX), y: Math.floor(Math.random() * tileCountY) };
+      gameLoop = setInterval(draw, 100);
+    }
+
+    document.addEventListener("keydown", changeDirection);
+
+    resetGame();
+  </script>
+  <div style="position: absolute; top: 20px; right: 20px; color: yellow;">
+    Made by Basically<br>
+    <a href="https://wink.messengergeek.com/u/basicallymachine/summary" target="_blank">wink.messengergeek.com/u/basicallymachine/summary</a><br>
+    Feedback: antivirusdevbasicallymachine@gmail.com<br
+
+```html
+<div style="position: absolute; bottom: 20px; left: 20px; color: white;">&copy; 2024 BasicallyMachine
+  </div>
